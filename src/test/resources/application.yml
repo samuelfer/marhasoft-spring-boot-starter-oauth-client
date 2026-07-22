@@ -1,0 +1,9 @@
+cerberus:
+  server-url: http://localhost:9999/
+  client:
+    id: diligencia
+    secret: kmL0l7GSlaEfpKZCc3FTDKrOeSA6A9t8GjNYAsuSrja0KEhGBPrzStnVvkKojQheJp6TiaUW8tAT7pglc5IFMruaYIRHAEHAbzNZpa6jxLndUOgv05eRCCmQXcE7ojnbTFlpOHaJ4dysS331xTzJC2hNOXMvBt5wOKcOwKkePHuEewEHWMxT1wUzmO8PW7K9GZVzawGEhXYFfMMK6Oaj4Dnrq5MTfu9ulECYe0OhsCibWUZEQeZvDhdK3MaZ4Xi3
+
+logging:
+  level:
+    org.springframework.security: DEBUG

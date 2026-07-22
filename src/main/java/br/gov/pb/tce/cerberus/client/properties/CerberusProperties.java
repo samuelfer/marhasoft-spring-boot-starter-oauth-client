@@ -9,7 +9,7 @@ public class CerberusProperties {
 
     private boolean enabled = true;
 
-    private URI issuerUri;
+    private URI serverUrl;
 
     private final Client client = new Client();
 
@@ -21,12 +21,12 @@ public class CerberusProperties {
         this.enabled = enabled;
     }
 
-    public URI getIssuerUri() {
-        return issuerUri;
+    public URI getServerUrl() {
+        return serverUrl;
     }
 
-    public void setIssuerUri(URI issuerUri) {
-        this.issuerUri = issuerUri;
+    public void setServerUrl(URI serverUrl) {
+        this.serverUrl = serverUrl;
     }
 
     public Client getClient() {
