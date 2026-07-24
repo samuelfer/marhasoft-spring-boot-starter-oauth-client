@@ -1,6 +1,6 @@
-package br.gov.pb.tce.cerberus.client;
+package io.github.samuelfernandes.cerberus.client;
 
-import br.gov.pb.tce.cerberus.client.configuration.OAuth2ClientConfiguration;
+import io.github.samuelfernandes.cerberus.client.configuration.OAuth2ClientConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

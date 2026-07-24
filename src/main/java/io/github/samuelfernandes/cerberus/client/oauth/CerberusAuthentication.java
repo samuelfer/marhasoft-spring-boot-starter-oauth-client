@@ -1,4 +1,4 @@
-package br.gov.pb.tce.cerberus.client.oauth;
+package io.github.samuelfernandes.cerberus.client.oauth;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;

@@ -1,4 +1,4 @@
-package br.gov.pb.tce.cerberus.client.oauth;
+package io.github.samuelfernandes.cerberus.client.oauth;
 
 public final class CerberusOAuth2Constants {
 

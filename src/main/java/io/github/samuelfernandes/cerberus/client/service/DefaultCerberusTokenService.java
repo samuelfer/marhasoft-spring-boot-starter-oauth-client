@@ -1,7 +1,7 @@
-package br.gov.pb.tce.cerberus.client.service;
+package io.github.samuelfernandes.cerberus.client.service;
 
-import br.gov.pb.tce.cerberus.client.oauth.CerberusAuthentication;
-import br.gov.pb.tce.cerberus.client.oauth.CerberusOAuth2Constants;
+import io.github.samuelfernandes.cerberus.client.oauth.CerberusAuthentication;
+import io.github.samuelfernandes.cerberus.client.oauth.CerberusOAuth2Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;

@@ -1,9 +1,9 @@
-package br.gov.pb.tce.cerberus.client.configuration;
+package io.github.samuelfernandes.cerberus.client.configuration;
 
-import br.gov.pb.tce.cerberus.client.oauth.CerberusOAuth2Constants;
-import br.gov.pb.tce.cerberus.client.properties.CerberusProperties;
-import br.gov.pb.tce.cerberus.client.service.CerberusTokenService;
-import br.gov.pb.tce.cerberus.client.service.DefaultCerberusTokenService;
+import io.github.samuelfernandes.cerberus.client.oauth.CerberusOAuth2Constants;
+import io.github.samuelfernandes.cerberus.client.properties.CerberusProperties;
+import io.github.samuelfernandes.cerberus.client.service.CerberusTokenService;
+import io.github.samuelfernandes.cerberus.client.service.DefaultCerberusTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

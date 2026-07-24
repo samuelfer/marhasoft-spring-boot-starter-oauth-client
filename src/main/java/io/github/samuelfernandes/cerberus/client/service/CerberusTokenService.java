@@ -1,4 +1,4 @@
-package br.gov.pb.tce.cerberus.client.service;
+package io.github.samuelfernandes.cerberus.client.service;
 
 public interface CerberusTokenService {
 

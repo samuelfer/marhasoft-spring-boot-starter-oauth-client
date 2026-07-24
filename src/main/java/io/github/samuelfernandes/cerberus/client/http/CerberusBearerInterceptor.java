@@ -1,8 +1,7 @@
-package br.gov.pb.tce.cerberus.client.http;
+package io.github.samuelfernandes.cerberus.client.http;
 
-import br.gov.pb.tce.cerberus.client.service.CerberusTokenService;
+import io.github.samuelfernandes.cerberus.client.service.CerberusTokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;

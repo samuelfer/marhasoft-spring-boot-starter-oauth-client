@@ -1,4 +1,4 @@
-package br.gov.pb.tce.cerberus.client.properties;
+package io.github.samuelfernandes.cerberus.client.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

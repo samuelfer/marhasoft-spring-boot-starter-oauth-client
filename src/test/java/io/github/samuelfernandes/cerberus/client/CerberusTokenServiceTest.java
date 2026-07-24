@@ -1,6 +1,6 @@
-package br.gov.pb.tce.cerberus.client;
+package io.github.samuelfernandes.cerberus.client;
 
-import br.gov.pb.tce.cerberus.client.service.CerberusTokenService;
+import io.github.samuelfernandes.cerberus.client.service.CerberusTokenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
