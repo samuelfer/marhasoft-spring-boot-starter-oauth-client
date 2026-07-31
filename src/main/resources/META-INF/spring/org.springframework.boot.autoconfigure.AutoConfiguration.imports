@@ -1,1 +1,1 @@
-io.github.samuelfernandes.cerberus.client.CerberusAutoConfiguration
+br.com.marhasoft.oauth.client.autoconfigure.OAuthClientAutoConfiguration

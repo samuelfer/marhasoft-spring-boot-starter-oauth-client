@@ -1,0 +1,43 @@
+{
+  "groups": [
+    {
+      "name": "marhasoft.oauth",
+      "type": "br.com.marhasoft.oauth.client.properties.OAuthClientProperties",
+      "description": "Configuration properties for the MarhaSoft OAuth Client."
+    }
+  ],
+  "properties": [
+    {
+      "name": "marhasoft.oauth.enabled",
+      "defaultValue": true,
+      "description": "Enables the OAuth Client auto-configuration."
+    },
+    {
+      "name": "marhasoft.oauth.server-url",
+      "description": "Base URL of the OAuth 2.0 Authorization Server."
+    },
+    {
+      "name": "marhasoft.oauth.client.id",
+      "description": "OAuth 2.0 Client ID used to obtain access tokens using the Client Credentials grant."
+    },
+    {
+      "name": "marhasoft.oauth.client.secret",
+      "description": "OAuth 2.0 Client Secret used to obtain access tokens using the Client Credentials grant."
+    }
+  ],
+  "hints": [
+    {
+      "name": "marhasoft.oauth.enabled",
+      "values": [
+        {
+          "value": true,
+          "description": "Enable the OAuth Client."
+        },
+        {
+          "value": false,
+          "description": "Disable the OAuth Client."
+        }
+      ]
+    }
+  ]
+}
