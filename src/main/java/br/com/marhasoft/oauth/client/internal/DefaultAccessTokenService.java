@@ -2,7 +2,6 @@ package br.com.marhasoft.oauth.client.internal;
 
 import br.com.marhasoft.oauth.client.api.AccessTokenService;
 import br.com.marhasoft.oauth.client.auth.ClientAuthentication;
-import br.com.marhasoft.oauth.client.auth.OAuthClientConstants;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -25,7 +24,7 @@ public class DefaultAccessTokenService implements AccessTokenService {
         OAuth2AuthorizedClient authorizedClient =
                 authorizedClientManager.authorize(
                         OAuth2AuthorizeRequest
-                                .withClientRegistrationId(OAuthClientConstants.REGISTRATION_ID)
+                                .withClientRegistrationId(OAuthClientConstants.CLIENT_REGISTRATION_ID)
                                 .principal(AUTHENTICATION)
                                 .build());
 

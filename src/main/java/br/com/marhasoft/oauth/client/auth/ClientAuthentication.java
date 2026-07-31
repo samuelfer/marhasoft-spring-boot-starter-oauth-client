@@ -10,8 +10,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
  */
 public final class ClientAuthentication extends AnonymousAuthenticationToken {
 
-    private static final String KEY = OAuthClientConstants.REGISTRATION_ID;
-    private static final String PRINCIPAL = OAuthClientConstants.REGISTRATION_ID;
+    private static final String KEY = OAuthClientConstants.CLIENT_REGISTRATION_ID;
+    private static final String PRINCIPAL = OAuthClientConstants.CLIENT_REGISTRATION_ID;
 
     public ClientAuthentication() {
         super(

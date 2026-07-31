@@ -16,7 +16,7 @@ class ClientAuthenticationTest {
                 new ClientAuthentication();
 
         assertThat(authentication.getPrincipal())
-                .isEqualTo("cerberus-client");
+                .isEqualTo("oauth-client");
 
         assertThat(authentication.isAuthenticated())
                 .isTrue();

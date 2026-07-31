@@ -14,7 +14,7 @@ class OAuthClientConstantsTest {
     void shouldHaveExpectedValues() {
 
         assertThat(OAuthClientConstants.CLIENT_REGISTRATION_ID)
-                .isEqualTo("cerberus");
+                .isEqualTo("oauth-client");
 
         assertThat(OAuthClientConstants.TOKEN_ENDPOINT)
                 .isEqualTo("oauth/token");

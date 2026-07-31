@@ -11,7 +11,7 @@ import org.springframework.boot.web.client.RestClientCustomizer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Configuração automática do Cerberus")
+@DisplayName("Configuração automática do OAuth Client")
 class OAuthClientAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner =
@@ -25,9 +25,9 @@ class OAuthClientAutoConfigurationTest {
 
         contextRunner
                 .withPropertyValues(
-                        "cerberus.server-url=http://localhost:9999",
-                        "cerberus.client.id=test-client",
-                        "cerberus.client.secret=test-secret"
+                        "marhasoft.oauth.server-url=http://localhost:9999",
+                        "marhasoft.oauth.client.id=test-client",
+                        "marhasoft.oauth.client.secret=test-secret"
                 )
                 .run(context -> {
 
@@ -70,7 +70,7 @@ class OAuthClientAutoConfigurationTest {
 
         contextRunner
                 .withPropertyValues(
-                        "cerberus.enabled=false"
+                        "marhasoft.oauth.enabled=false"
                 )
                 .run(context -> {
 

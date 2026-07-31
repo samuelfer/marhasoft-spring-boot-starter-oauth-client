@@ -1,6 +1,45 @@
+# Maven
 target/
+
+# IntelliJ IDEA
 .idea/
 *.iml
+
+# Eclipse
 .classpath
 .project
 .settings/
+
+# VS Code
+.vscode/
+
+# Maven Wrapper (descomente se não quiser versionar)
+# .mvn/
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.swp
+*.bak
+
+# Sistema operacional
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Arquivos de compilação
+*.class
+
+# Arquivos de cobertura
+coverage/
+jacoco.exec
+
+# Relatórios
+surefire-reports/
+failsafe-reports/
