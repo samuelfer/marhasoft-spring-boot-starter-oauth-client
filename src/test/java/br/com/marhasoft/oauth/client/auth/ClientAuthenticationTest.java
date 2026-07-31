@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Autenticação do cliente OAuth2")
+@DisplayName("Autenticação do cliente OAuth")
 class ClientAuthenticationTest {
 
     @Test
@@ -18,11 +18,15 @@ class ClientAuthenticationTest {
         assertThat(authentication.getPrincipal())
                 .isEqualTo("oauth-client");
 
+        assertThat(authentication.getName())
+                .isEqualTo("oauth-client");
+
         assertThat(authentication.isAuthenticated())
                 .isTrue();
 
         assertThat(authentication.getAuthorities())
-                .hasSize(1);
+                .extracting("authority")
+                .containsExactly("ROLE_OAUTH_CLIENT");
 
     }
 

@@ -1,5 +1,6 @@
 package br.com.marhasoft.oauth.client.properties;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,6 +11,7 @@ import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Propriedades do cliente OAuth")
 class OAuthClientPropertiesTest {
 
     private final ApplicationContextRunner contextRunner =
@@ -19,13 +21,14 @@ class OAuthClientPropertiesTest {
                     );
 
     @Test
+    @DisplayName("Deve carregar as propriedades corretamente")
     void shouldBindProperties() {
 
         contextRunner
                 .withPropertyValues(
-                        "cerberus.server-url=http://localhost:9999",
-                        "cerberus.client.id=test-client",
-                        "cerberus.client.secret=test-secret"
+                        "marhasoft.oauth.server-url=http://localhost:9999",
+                        "marhasoft.oauth.client.id=test-client",
+                        "marhasoft.oauth.client.secret=test-secret"
                 )
                 .run(context -> {
 
@@ -48,12 +51,13 @@ class OAuthClientPropertiesTest {
     }
 
     @Test
+    @DisplayName("Deve falhar quando a URL do servidor não for informada")
     void shouldFailWhenServerUrlIsMissing() {
 
         contextRunner
                 .withPropertyValues(
-                        "cerberus.client.id=test-client",
-                        "cerberus.client.secret=test-secret"
+                        "marhasoft.oauth.client.id=test-client",
+                        "marhasoft.oauth.client.secret=test-secret"
                 )
                 .run(context -> {
 
@@ -64,12 +68,13 @@ class OAuthClientPropertiesTest {
     }
 
     @Test
+    @DisplayName("Deve falhar quando o Client ID não for informado")
     void shouldFailWhenClientIdIsMissing() {
 
         contextRunner
                 .withPropertyValues(
-                        "cerberus.server-url=http://localhost:9999",
-                        "cerberus.client.secret=test-secret"
+                        "marhasoft.oauth.server-url=http://localhost:9999",
+                        "marhasoft.oauth.client.secret=test-secret"
                 )
                 .run(context -> {
 
@@ -84,12 +89,13 @@ class OAuthClientPropertiesTest {
     }
 
     @Test
+    @DisplayName("Deve falhar quando o Client Secret não for informado")
     void shouldFailWhenClientSecretIsMissing() {
 
         contextRunner
                 .withPropertyValues(
-                        "cerberus.server-url=http://localhost:9999",
-                        "cerberus.client.id=test-client"
+                        "marhasoft.oauth.server-url=http://localhost:9999",
+                        "marhasoft.oauth.client.id=test-client"
                 )
                 .run(context -> {
 
@@ -102,6 +108,7 @@ class OAuthClientPropertiesTest {
                 });
 
     }
+
     @Configuration(proxyBeanMethods = false)
     @EnableConfigurationProperties(OAuthClientProperties.class)
     static class TestConfiguration {
