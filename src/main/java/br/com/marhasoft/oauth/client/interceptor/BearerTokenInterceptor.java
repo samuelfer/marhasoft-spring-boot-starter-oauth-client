@@ -8,23 +8,23 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 
-//@RequiredArgsConstructor
 public class BearerTokenInterceptor implements ClientHttpRequestInterceptor {
 
-    private final AccessTokenService tokenService;
+    private final AccessTokenService accessTokenService;
 
-    public BearerTokenInterceptor(AccessTokenService tokenService) {
-        this.tokenService = tokenService;
+    public BearerTokenInterceptor(AccessTokenService accessTokenService) {
+        this.accessTokenService = accessTokenService;
     }
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest request,
-                                        byte[] body,
-                                        ClientHttpRequestExecution execution)
+    public ClientHttpResponse intercept(
+            HttpRequest request,
+            byte[] body,
+            ClientHttpRequestExecution execution)
             throws IOException {
 
         request.getHeaders()
-                .setBearerAuth(tokenService.getAccessToken());
+                .setBearerAuth(accessTokenService.getAccessToken());
 
         return execution.execute(request, body);
     }

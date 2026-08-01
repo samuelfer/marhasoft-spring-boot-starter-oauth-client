@@ -1,6 +1,7 @@
 package br.com.marhasoft.oauth.client.config;
 
 import br.com.marhasoft.oauth.client.api.AccessTokenService;
+import br.com.marhasoft.oauth.client.api.OAuthRestClientFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -28,7 +29,7 @@ class RestClientConfigurationTest {
         contextRunner.run(context -> {
 
             assertThat(context)
-                    .hasSingleBean(RestClientCustomizer.class);
+                    .hasSingleBean(OAuthRestClientFactory.class);
 
         });
 
@@ -47,7 +48,7 @@ class RestClientConfigurationTest {
                 .run(context -> {
 
                     assertThat(context)
-                            .hasSingleBean(RestClientCustomizer.class);
+                            .hasSingleBean(OAuthRestClientFactory.class);
 
                 });
 

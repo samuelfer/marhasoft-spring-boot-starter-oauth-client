@@ -1,6 +1,8 @@
 package br.com.marhasoft.oauth.client.config;
 
 import br.com.marhasoft.oauth.client.api.AccessTokenService;
+import br.com.marhasoft.oauth.client.api.OAuthRestClientFactory;
+import br.com.marhasoft.oauth.client.internal.DefaultOAuthRestClientFactory;
 import br.com.marhasoft.oauth.client.internal.OAuthClientConstants;
 import br.com.marhasoft.oauth.client.internal.DefaultAccessTokenService;
 import br.com.marhasoft.oauth.client.properties.OAuthClientProperties;
@@ -15,6 +17,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.web.client.RestClient;
 
 /**
  * Configures the OAuth2 Client infrastructure used to obtain

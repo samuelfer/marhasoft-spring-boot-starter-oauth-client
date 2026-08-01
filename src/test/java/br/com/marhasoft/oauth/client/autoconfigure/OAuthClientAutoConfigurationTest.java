@@ -1,6 +1,7 @@
 package br.com.marhasoft.oauth.client.autoconfigure;
 
 import br.com.marhasoft.oauth.client.api.AccessTokenService;
+import br.com.marhasoft.oauth.client.api.OAuthRestClientFactory;
 import br.com.marhasoft.oauth.client.config.OAuthClientConfiguration;
 import br.com.marhasoft.oauth.client.config.RestClientConfiguration;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +44,7 @@ class OAuthClientAutoConfigurationTest {
                             .hasSingleBean(AccessTokenService.class);
 
                     assertThat(context)
-                            .hasSingleBean(RestClientCustomizer.class);
+                            .hasSingleBean(OAuthRestClientFactory.class);
 
                 });
 
