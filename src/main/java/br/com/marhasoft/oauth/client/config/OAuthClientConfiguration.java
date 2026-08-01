@@ -4,6 +4,8 @@ import br.com.marhasoft.oauth.client.api.AccessTokenService;
 import br.com.marhasoft.oauth.client.internal.OAuthClientConstants;
 import br.com.marhasoft.oauth.client.internal.DefaultAccessTokenService;
 import br.com.marhasoft.oauth.client.properties.OAuthClientProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,10 @@ public class OAuthClientConfiguration {
 
     private final OAuthClientProperties properties;
 
+    private static final Logger log =
+            LoggerFactory.getLogger(OAuthClientConfiguration.class);
+
+
     public OAuthClientConfiguration(OAuthClientProperties properties) {
         this.properties = properties;
     }
@@ -30,6 +36,9 @@ public class OAuthClientConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ClientRegistration clientRegistration() {
+
+        log.info("Client ID: {}", properties.getClient().getId());
+        log.info("Client Secret: {}", properties.getClient().getSecret());
 
         return ClientRegistration
                 .withRegistrationId(OAuthClientConstants.CLIENT_REGISTRATION_ID)

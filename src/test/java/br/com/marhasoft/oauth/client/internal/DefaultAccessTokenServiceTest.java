@@ -1,5 +1,6 @@
 package br.com.marhasoft.oauth.client.internal;
 
+import br.com.marhasoft.oauth.client.exception.OAuthClientException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +17,11 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 
 import java.time.Instant;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Serviço de Access Token")
@@ -30,11 +34,11 @@ class DefaultAccessTokenServiceTest {
     private DefaultAccessTokenService service;
 
     @Test
-    @DisplayName("Deve retornar o access token")
+    @DisplayName("Deve retornar o Access Token")
     void shouldReturnAccessToken() {
 
         ClientRegistration registration =
-                ClientRegistration.withRegistrationId("cerberus")
+                ClientRegistration.withRegistrationId("oauth-client")
                         .tokenUri("http://localhost")
                         .clientId("id")
                         .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
@@ -64,20 +68,18 @@ class DefaultAccessTokenServiceTest {
 
         assertThat(captor.getValue().getClientRegistrationId())
                 .isEqualTo(OAuthClientConstants.CLIENT_REGISTRATION_ID);
-
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando não conseguir obter o token")
-    void shouldThrowExceptionWhenAuthorizedClientIsNull() {
+    @DisplayName("Deve lançar OAuthClientException quando o Authorization Server não retornar um Access Token")
+    void shouldThrowOAuthClientExceptionWhenAuthorizedClientIsNull() {
 
         when(manager.authorize(any()))
                 .thenReturn(null);
 
         assertThatThrownBy(service::getAccessToken)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Não foi possível obter o Access Token.");
-
+                .isInstanceOf(OAuthClientException.class)
+                .hasMessage("O Authorization Server não retornou um Access Token.");
     }
 
 }
