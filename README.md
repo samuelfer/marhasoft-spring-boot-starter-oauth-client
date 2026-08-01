@@ -79,7 +79,7 @@ Dessa forma, a aplicação consumidora precisa apenas configurar os clientes OAu
 Para utilizar a biblioteca são necessários:
 
 - Java 21 ou superior
-- Spring Boot 4.x
+- Spring Boot 3.5+
 
 ---
 
