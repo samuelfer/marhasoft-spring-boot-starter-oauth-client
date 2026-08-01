@@ -1,8 +1,8 @@
 # MarhaSoft OAuth Client Spring Boot Starter
 
-Spring Boot Starter para integração automática com servidores de autorização OAuth 2.0 utilizando o fluxo **Client Credentials**.
+Spring Boot Starter para integração automática com Authorization Servers OAuth 2.0 utilizando o fluxo **Client Credentials**.
 
-A biblioteca elimina a necessidade de configurar manualmente o Spring Security OAuth Client, fornecendo uma integração simples e padronizada para obtenção e gerenciamento de Access Tokens.
+A biblioteca elimina a necessidade de configurar manualmente o Spring Security OAuth Client, fornecendo uma integração simples e padronizada para obtenção, reutilização e renovação automática de Access Tokens.
 
 ---
 
@@ -12,12 +12,14 @@ A biblioteca elimina a necessidade de configurar manualmente o Spring Security O
 - Configuração automática do OAuth 2.0 Client
 - Suporte ao fluxo **Client Credentials**
 - Gerenciamento automático de Access Tokens
-- Reutilização automática de tokens válidos
+- Reutilização automática de Access Tokens válidos
+- Renovação automática de Access Tokens expirados
 - Integração com `RestClient`
 - Configuração através de `@ConfigurationProperties`
-- Validação das propriedades obrigatórias (Fail Fast)
+- Validação das propriedades obrigatórias (_Fail Fast_)
 - Tratamento de exceções com mensagens amigáveis
-- Testes unitários e testes de Auto Configuration
+- Testes unitários
+- Testes de Auto Configuration
 
 ---
 
@@ -38,7 +40,7 @@ mvn clean install
 
 Isso instalará a biblioteca no repositório Maven local (`~/.m2/repository`).
 
-Depois adicione a dependência:
+Depois adicione a dependência ao projeto:
 
 ```xml
 <dependency>
@@ -91,7 +93,8 @@ public class ExampleService {
 
         String accessToken = accessTokenService.getAccessToken();
 
-        // Utilize o token conforme necessário.
+        // Utilize o Access Token conforme necessário.
+
     }
 
 }
@@ -103,22 +106,22 @@ public class ExampleService {
 
 Durante a inicialização da aplicação, a biblioteca:
 
-1. Lê as propriedades configuradas;
-2. Configura automaticamente o cliente OAuth;
-3. Registra todos os componentes necessários do Spring Security;
-4. Solicita automaticamente um Access Token quando necessário;
-5. Reutiliza tokens válidos automaticamente;
-6. Solicita um novo Access Token quando o token atual expira.
+1. Lê as propriedades configuradas.
+2. Configura automaticamente o cliente OAuth 2.0.
+3. Registra os componentes necessários do Spring Security.
+4. Solicita automaticamente um Access Token quando necessário.
+5. Reutiliza automaticamente Access Tokens válidos.
+6. Solicita automaticamente um novo Access Token quando o token atual expira.
 
-O consumidor da biblioteca não precisa se preocupar com a obtenção ou renovação do Access Token.
+Todo o gerenciamento do ciclo de vida do Access Token é realizado automaticamente pela biblioteca.
 
 ---
 
 # Tratamento de erros
 
-Todas as falhas relacionadas à autenticação OAuth são encapsuladas em uma `OAuthClientException`.
+Todas as falhas relacionadas ao processo de autenticação OAuth são encapsuladas em uma `OAuthClientException`.
 
-Exemplo:
+## Exemplo
 
 ```java
 try {
@@ -127,22 +130,27 @@ try {
 
 } catch (OAuthClientException ex) {
 
-    // Trate a exceção conforme necessário
+    // Trate a exceção conforme necessário.
 
 }
 ```
 
-### Códigos de erro
+## Cenários tratados
 
-| Código | Descrição |
-|---------|-----------|
-| `MI_OAUTH-001` | O Authorization Server retornou uma resposta inesperada ao solicitar o Access Token. |
+A biblioteca traduz automaticamente os principais cenários de erro:
+
+| Cenário | Mensagem |
+|----------|----------|
+| Client ID ou Client Secret inválidos | Falha na autenticação do cliente OAuth. Verifique o Client ID e o Client Secret. |
+| Authorization Server indisponível | Não foi possível conectar ao Authorization Server. Verifique se o servidor está disponível. |
+| Resposta inesperada do Authorization Server | O Authorization Server retornou uma resposta inesperada ao solicitar o Access Token. Verifique os logs do Authorization Server para mais detalhes. |
+| Outros erros | Erro ao obter o Access Token do Authorization Server. |
 
 ---
 
 # Estrutura do Projeto
 
-```
+```text
 br.com.marhasoft.oauth.client
 ├── api
 ├── auth
@@ -158,14 +166,15 @@ br.com.marhasoft.oauth.client
 
 # Primeira Versão
 
-A versão inicial contempla:
+A primeira versão da biblioteca contempla:
 
 - Auto Configuration
 - Configuration Properties
 - OAuth 2.0 Client Credentials
 - Gerenciamento automático de Access Tokens
-- Reutilização automática de tokens
-- Integração com RestClient
+- Reutilização automática de Access Tokens
+- Renovação automática de Access Tokens expirados
+- Integração com `RestClient`
 - Tratamento de exceções
 - Testes unitários
 - Testes de Auto Configuration
@@ -175,17 +184,44 @@ A versão inicial contempla:
 
 # Roadmap
 
-Próximas funcionalidades planejadas:
+Funcionalidades planejadas para as próximas versões:
 
+- Suporte a múltiplos clientes OAuth
 - Retry configurável
 - Timeout configurável
 - Observabilidade com Micrometer
 - Configuração de Proxy HTTP
-- Customização do RestClient
+- Customização do `RestClient`
 - Exemplos completos de utilização
 - Integração com WireMock para testes
 
 ---
+
+---
+
+# Fluxo de Funcionamento
+
+```mermaid
+sequenceDiagram
+    participant Aplicação
+    participant Biblioteca
+    participant Authorization Server
+
+    Aplicação->>Biblioteca: getAccessToken()
+
+    alt Token inexistente
+        Biblioteca->>Authorization Server: POST /oauth/token
+        Authorization Server-->>Biblioteca: Access Token
+        Biblioteca-->>Aplicação: Access Token
+    else Token válido
+        Biblioteca-->>Aplicação: Access Token em cache
+    else Token expirado
+        Biblioteca->>Authorization Server: POST /oauth/token
+        Authorization Server-->>Biblioteca: Novo Access Token
+        Biblioteca-->>Aplicação: Novo Access Token
+    end
+```
+
 
 # Licença
 
