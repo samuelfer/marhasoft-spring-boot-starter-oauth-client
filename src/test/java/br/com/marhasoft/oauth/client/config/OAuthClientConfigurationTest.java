@@ -6,7 +6,9 @@ import br.com.marhasoft.oauth.client.properties.OAuthClientProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.oauth2.client.*;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -20,11 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class OAuthClientConfigurationTest {
 
     private OAuthClientConfiguration configuration;
+    private OAuthClientProperties properties;
 
     @BeforeEach
     void setUp() {
 
-        OAuthClientProperties properties = new OAuthClientProperties();
+        properties = new OAuthClientProperties();
         properties.setServerUrl(URI.create("http://localhost:8080"));
 
         properties.getClient().setId("client-id");
@@ -34,63 +37,44 @@ class OAuthClientConfigurationTest {
     }
 
     @Test
-    @DisplayName("Deve criar o ClientRegistration")
-    void shouldCreateClientRegistration() {
-
-        ClientRegistration registration =
-                configuration.clientRegistration();
-
-        assertThat(registration.getRegistrationId())
-                .isEqualTo(OAuthClientConstants.CLIENT_REGISTRATION_ID);
-
-        assertThat(registration.getClientId())
-                .isEqualTo("client-id");
-
-        assertThat(registration.getClientSecret())
-                .isEqualTo("client-secret");
-
-        assertThat(registration.getAuthorizationGrantType())
-                .isEqualTo(AuthorizationGrantType.CLIENT_CREDENTIALS);
-
-        assertThat(registration.getClientAuthenticationMethod())
-                .isEqualTo(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
-
-        assertThat(registration.getProviderDetails().getTokenUri())
-                .isEqualTo("http://localhost:8080/oauth/token");
-    }
-
-    @Test
     @DisplayName("Deve criar o ClientRegistrationRepository")
     void shouldCreateClientRegistrationRepository() {
 
-        ClientRegistration registration =
-                configuration.clientRegistration();
-
         ClientRegistrationRepository repository =
-                configuration.clientRegistrationRepository(registration);
+                configuration.clientRegistrationRepository();
 
-        assertThat(repository)
-                .isNotNull();
+        assertThat(repository).isNotNull();
 
-        assertThat(repository.findByRegistrationId(OAuthClientConstants.CLIENT_REGISTRATION_ID))
-                .isEqualTo(registration);
+        ClientRegistration registration =
+                repository.findByRegistrationId(
+                        OAuthClientConstants.CLIENT_REGISTRATION_ID);
+
+        assertThat(registration).isNotNull();
+        assertThat(registration.getRegistrationId())
+                .isEqualTo(OAuthClientConstants.CLIENT_REGISTRATION_ID);
+        assertThat(registration.getClientId())
+                .isEqualTo("client-id");
+        assertThat(registration.getClientSecret())
+                .isEqualTo("client-secret");
+        assertThat(registration.getAuthorizationGrantType())
+                .isEqualTo(AuthorizationGrantType.CLIENT_CREDENTIALS);
+        assertThat(registration.getClientAuthenticationMethod())
+                .isEqualTo(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        assertThat(registration.getProviderDetails().getTokenUri())
+                .isEqualTo("http://localhost:8080/oauth/token");
     }
 
     @Test
     @DisplayName("Deve criar o OAuth2AuthorizedClientService")
     void shouldCreateAuthorizedClientService() {
 
-        ClientRegistration registration =
-                configuration.clientRegistration();
-
         ClientRegistrationRepository repository =
-                configuration.clientRegistrationRepository(registration);
+                configuration.clientRegistrationRepository();
 
         OAuth2AuthorizedClientService service =
                 configuration.authorizedClientService(repository);
 
-        assertThat(service)
-                .isNotNull();
+        assertThat(service).isNotNull();
     }
 
     @Test
@@ -100,19 +84,15 @@ class OAuthClientConfigurationTest {
         OAuth2AuthorizedClientProvider provider =
                 configuration.authorizedClientProvider();
 
-        assertThat(provider)
-                .isNotNull();
+        assertThat(provider).isNotNull();
     }
 
     @Test
     @DisplayName("Deve criar o OAuth2AuthorizedClientManager")
     void shouldCreateAuthorizedClientManager() {
 
-        ClientRegistration registration =
-                configuration.clientRegistration();
-
         ClientRegistrationRepository repository =
-                configuration.clientRegistrationRepository(registration);
+                configuration.clientRegistrationRepository();
 
         OAuth2AuthorizedClientService service =
                 configuration.authorizedClientService(repository);
@@ -126,19 +106,15 @@ class OAuthClientConfigurationTest {
                         service,
                         provider);
 
-        assertThat(manager)
-                .isNotNull();
+        assertThat(manager).isNotNull();
     }
 
     @Test
     @DisplayName("Deve criar o AccessTokenService")
     void shouldCreateAccessTokenService() {
 
-        ClientRegistration registration =
-                configuration.clientRegistration();
-
         ClientRegistrationRepository repository =
-                configuration.clientRegistrationRepository(registration);
+                configuration.clientRegistrationRepository();
 
         OAuth2AuthorizedClientService service =
                 configuration.authorizedClientService(repository);
@@ -155,8 +131,7 @@ class OAuthClientConfigurationTest {
         AccessTokenService tokenService =
                 configuration.accessTokenService(manager);
 
-        assertThat(tokenService)
-                .isNotNull();
+        assertThat(tokenService).isNotNull();
     }
 
 }

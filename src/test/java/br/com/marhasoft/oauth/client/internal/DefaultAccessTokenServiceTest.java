@@ -1,11 +1,12 @@
 package br.com.marhasoft.oauth.client.internal;
 
 import br.com.marhasoft.oauth.client.exception.OAuthClientException;
+import br.com.marhasoft.oauth.client.properties.OAuthClientProperties;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -30,18 +31,29 @@ class DefaultAccessTokenServiceTest {
     @Mock
     private OAuth2AuthorizedClientManager manager;
 
-    @InjectMocks
     private DefaultAccessTokenService service;
+
+    @BeforeEach
+    void setUp() {
+
+        OAuthClientProperties properties = new OAuthClientProperties();
+
+        service = new DefaultAccessTokenService(
+                manager,
+                properties);
+    }
 
     @Test
     @DisplayName("Deve retornar o Access Token")
     void shouldReturnAccessToken() {
 
         ClientRegistration registration =
-                ClientRegistration.withRegistrationId("oauth-client")
+                ClientRegistration.withRegistrationId(
+                                OAuthClientConstants.CLIENT_REGISTRATION_ID)
                         .tokenUri("http://localhost")
                         .clientId("id")
-                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                        .authorizationGrantType(
+                                AuthorizationGrantType.CLIENT_CREDENTIALS)
                         .build();
 
         OAuth2AccessToken token =
@@ -52,9 +64,13 @@ class DefaultAccessTokenServiceTest {
                         Instant.now().plusSeconds(3600));
 
         OAuth2AuthorizedClient client =
-                new OAuth2AuthorizedClient(registration, "principal", token);
+                new OAuth2AuthorizedClient(
+                        registration,
+                        "principal",
+                        token);
 
-        when(manager.authorize(any())).thenReturn(client);
+        when(manager.authorize(any()))
+                .thenReturn(client);
 
         String accessToken = service.getAccessToken();
 
@@ -62,7 +78,8 @@ class DefaultAccessTokenServiceTest {
                 .isEqualTo("abc123");
 
         ArgumentCaptor<OAuth2AuthorizeRequest> captor =
-                ArgumentCaptor.forClass(OAuth2AuthorizeRequest.class);
+                ArgumentCaptor.forClass(
+                        OAuth2AuthorizeRequest.class);
 
         verify(manager).authorize(captor.capture());
 

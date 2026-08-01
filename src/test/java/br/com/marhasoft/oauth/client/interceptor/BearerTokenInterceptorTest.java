@@ -11,6 +11,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Interceptor Bearer")
@@ -23,7 +24,7 @@ class BearerTokenInterceptorTest {
         AccessTokenService tokenService =
                 mock(AccessTokenService.class);
 
-        when(tokenService.getAccessToken())
+        when(tokenService.getAccessToken("diligencia"))
                 .thenReturn("abc123");
 
         HttpRequest request = mock(HttpRequest.class);
@@ -42,13 +43,17 @@ class BearerTokenInterceptorTest {
                 .thenReturn(response);
 
         BearerTokenInterceptor interceptor =
-                new BearerTokenInterceptor(tokenService);
+                new BearerTokenInterceptor(
+                        tokenService,
+                        "diligencia");
 
         interceptor.intercept(request, new byte[0], execution);
 
         assertThat(headers.getFirst(HttpHeaders.AUTHORIZATION))
                 .isEqualTo("Bearer abc123");
 
+        verify(tokenService)
+                .getAccessToken("diligencia");
     }
 
 }

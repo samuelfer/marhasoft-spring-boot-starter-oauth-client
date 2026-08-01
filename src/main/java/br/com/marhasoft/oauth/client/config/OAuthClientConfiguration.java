@@ -1,13 +1,9 @@
 package br.com.marhasoft.oauth.client.config;
 
 import br.com.marhasoft.oauth.client.api.AccessTokenService;
-import br.com.marhasoft.oauth.client.api.OAuthRestClientFactory;
-import br.com.marhasoft.oauth.client.internal.DefaultOAuthRestClientFactory;
-import br.com.marhasoft.oauth.client.internal.OAuthClientConstants;
 import br.com.marhasoft.oauth.client.internal.DefaultAccessTokenService;
+import br.com.marhasoft.oauth.client.internal.OAuthClientConstants;
 import br.com.marhasoft.oauth.client.properties.OAuthClientProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,48 +13,60 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.web.client.RestClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Configures the OAuth2 Client infrastructure used to obtain
- * Access Tokens through the Client Credentials grant.
+ * Configures the OAuth 2.0 Client infrastructure used to obtain
+ * Access Tokens using the Client Credentials grant type.
+ *
+ * <p>This configuration supports both the single-client
+ * configuration and the new multiple-client configuration.</p>
  */
 @Configuration(proxyBeanMethods = false)
 public class OAuthClientConfiguration {
 
     private final OAuthClientProperties properties;
 
-    private static final Logger log =
-            LoggerFactory.getLogger(OAuthClientConfiguration.class);
-
-
     public OAuthClientConfiguration(OAuthClientProperties properties) {
         this.properties = properties;
     }
 
+    /**
+     * Creates the repository containing all configured OAuth clients.
+     *
+     * <p>If multiple clients are configured, all of them are registered.
+     * Otherwise, the legacy single-client configuration is used.</p>
+     */
     @Bean
     @ConditionalOnMissingBean
-    public ClientRegistration clientRegistration() {
+    public ClientRegistrationRepository clientRegistrationRepository() {
 
-        log.info("Client ID: {}", properties.getClient().getId());
-        log.info("Client Secret: {}", properties.getClient().getSecret());
+        List<ClientRegistration> registrations = new ArrayList<>();
 
-        return ClientRegistration
-                .withRegistrationId(OAuthClientConstants.CLIENT_REGISTRATION_ID)
-                .clientId(properties.getClient().getId())
-                .clientSecret(properties.getClient().getSecret())
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .tokenUri(resolveTokenEndpoint())
-                .build();
+        // Registers all configured OAuth clients.
+        if (!properties.getClients().isEmpty()) {
+
+            properties.getClients().forEach((name, client) ->
+                    registrations.add(createClientRegistration(name, client)));
+
+        } else {
+
+            // Backward compatibility with the legacy single-client configuration.
+            registrations.add(
+                    createClientRegistration(
+                            OAuthClientConstants.CLIENT_REGISTRATION_ID,
+                            properties.getClient()));
+        }
+
+        return new InMemoryClientRegistrationRepository(registrations);
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public ClientRegistrationRepository clientRegistrationRepository(ClientRegistration registration) {
-        return new InMemoryClientRegistrationRepository(registration);
-    }
-
+    /**
+     * Creates the service responsible for storing authorized clients
+     * and their respective Access Tokens.
+     */
     @Bean
     @ConditionalOnMissingBean
     public OAuth2AuthorizedClientService authorizedClientService(
@@ -67,15 +75,23 @@ public class OAuthClientConfiguration {
         return new InMemoryOAuth2AuthorizedClientService(repository);
     }
 
+    /**
+     * Configures the OAuth2 provider to use the Client Credentials flow.
+     */
     @Bean
     @ConditionalOnMissingBean
     public OAuth2AuthorizedClientProvider authorizedClientProvider() {
-        return  OAuth2AuthorizedClientProviderBuilder
+
+        return OAuth2AuthorizedClientProviderBuilder
                 .builder()
                 .clientCredentials()
                 .build();
     }
 
+    /**
+     * Creates the manager responsible for authorizing OAuth clients
+     * and automatically obtaining or renewing Access Tokens when necessary.
+     */
     @Bean
     @ConditionalOnMissingBean
     public OAuth2AuthorizedClientManager authorizedClientManager(
@@ -93,18 +109,45 @@ public class OAuthClientConfiguration {
         return manager;
     }
 
+    /**
+     * Exposes the AccessTokenService used by applications to obtain
+     * Access Tokens from the configured Authorization Server.
+     */
     @Bean
     @ConditionalOnMissingBean
     public AccessTokenService accessTokenService(
             OAuth2AuthorizedClientManager manager) {
 
-        return new DefaultAccessTokenService(manager);
+        return new DefaultAccessTokenService(manager, properties);
     }
 
+    /**
+     * Resolves the OAuth 2.0 Token Endpoint based on the configured
+     * Authorization Server URL.
+     */
     private String resolveTokenEndpoint() {
+
         return properties.getServerUrl()
                 .resolve(OAuthClientConstants.TOKEN_ENDPOINT)
                 .toString();
+    }
+
+    /**
+     * Creates a ClientRegistration for a configured OAuth client.
+     */
+    private ClientRegistration createClientRegistration(
+            String registrationId,
+            OAuthClientProperties.Client client) {
+
+        return ClientRegistration.withRegistrationId(registrationId)
+                .clientId(client.getId())
+                .clientSecret(client.getSecret())
+                .authorizationGrantType(
+                        AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .clientAuthenticationMethod(
+                        ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .tokenUri(resolveTokenEndpoint())
+                .build();
     }
 
 }

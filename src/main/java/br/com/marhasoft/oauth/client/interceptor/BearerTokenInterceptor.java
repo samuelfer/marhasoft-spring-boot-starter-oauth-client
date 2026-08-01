@@ -11,9 +11,13 @@ import java.io.IOException;
 public class BearerTokenInterceptor implements ClientHttpRequestInterceptor {
 
     private final AccessTokenService accessTokenService;
+    private final String client;
 
-    public BearerTokenInterceptor(AccessTokenService accessTokenService) {
+
+    public BearerTokenInterceptor(AccessTokenService accessTokenService,
+                                  String client) {
         this.accessTokenService = accessTokenService;
+        this.client = client;
     }
 
     @Override
@@ -24,7 +28,8 @@ public class BearerTokenInterceptor implements ClientHttpRequestInterceptor {
             throws IOException {
 
         request.getHeaders()
-                .setBearerAuth(accessTokenService.getAccessToken());
+                .setBearerAuth(
+                        accessTokenService.getAccessToken(client));
 
         return execution.execute(request, body);
     }

@@ -11,4 +11,9 @@ public interface AccessTokenService {
      * @return a valid access token.
      */
     String getAccessToken();
+
+    /**
+     * Obtém o Access Token do cliente informado.
+     */
+    String getAccessToken(String clientRegistrationId);
 }

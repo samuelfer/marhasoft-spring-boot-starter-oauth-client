@@ -2,6 +2,7 @@ package br.com.marhasoft.oauth.client.config;
 
 import br.com.marhasoft.oauth.client.api.AccessTokenService;
 import br.com.marhasoft.oauth.client.api.OAuthRestClientFactory;
+import br.com.marhasoft.oauth.client.properties.OAuthClientProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -17,22 +18,22 @@ class RestClientConfigurationTest {
     private final ApplicationContextRunner contextRunner =
             new ApplicationContextRunner()
                     .withConfiguration(
-                            AutoConfigurations.of(RestClientConfiguration.class))
+                            AutoConfigurations.of(
+                                    RestClientConfiguration.class))
                     .withBean(
                             AccessTokenService.class,
-                            () -> mock(AccessTokenService.class));
+                            () -> mock(AccessTokenService.class))
+                    .withBean(
+                            OAuthClientProperties.class,
+                            OAuthClientProperties::new);
 
     @Test
-    @DisplayName("Deve criar o RestClientCustomizer")
-    void shouldCreateRestClientCustomizer() {
+    @DisplayName("Deve criar o OAuthRestClientFactory")
+    void shouldCreateOAuthRestClientFactory() {
 
-        contextRunner.run(context -> {
-
-            assertThat(context)
-                    .hasSingleBean(OAuthRestClientFactory.class);
-
-        });
-
+        contextRunner.run(context ->
+                assertThat(context)
+                        .hasSingleBean(OAuthRestClientFactory.class));
     }
 
     @Test
@@ -45,13 +46,8 @@ class RestClientConfigurationTest {
                         RestClientCustomizer.class,
                         () -> builder -> {
                         })
-                .run(context -> {
-
-                    assertThat(context)
-                            .hasSingleBean(OAuthRestClientFactory.class);
-
-                });
-
+                .run(context ->
+                        assertThat(context)
+                                .hasSingleBean(OAuthRestClientFactory.class));
     }
-
 }
