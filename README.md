@@ -6,22 +6,62 @@ A biblioteca elimina a necessidade de configurar manualmente o Spring Security O
 
 ---
 
-# Funcionalidades
+## Funcionalidades
 
 - Auto Configuration para Spring Boot
 - Configuração automática do OAuth 2.0 Client
 - Suporte ao fluxo **Client Credentials**
 - Gerenciamento automático de Access Tokens
-- Reutilização automática de Access Tokens válidos
-- Renovação automática de Access Tokens expirados
+- Reutilização automática de tokens válidos
+- Renovação automática após expiração do Access Token
+- RestClient autenticado com Bearer Token automático
 - Integração com `RestClient`
 - Configuração através de `@ConfigurationProperties`
 - Validação das propriedades obrigatórias (_Fail Fast_)
 - Tratamento de exceções com mensagens amigáveis
-- Testes unitários
-- Testes de Auto Configuration
+- Testes unitários e testes de Auto Configuration
 
 ---
+
+## RestClient autenticado
+
+Além do `AccessTokenService`, a biblioteca disponibiliza um `OAuthRestClientFactory`, responsável por fornecer um `RestClient` configurado automaticamente para autenticação OAuth 2.0.
+
+Todas as requisições realizadas através desse cliente incluem automaticamente o cabeçalho `Authorization: Bearer <token>`.
+
+Exemplo:
+
+```java
+@Service
+public class VeiculoService {
+
+    private final RestClient restClient;
+
+    public VeiculoService(OAuthRestClientFactory factory) {
+        this.restClient = factory.create();
+    }
+
+    public void enviar(VeiculoRequest request) {
+
+        restClient.post()
+                .uri("https://api.exemplo.com/veiculos")
+                .body(request)
+                .retrieve()
+                .toBodilessEntity();
+
+    }
+
+}
+```
+
+O consumidor da biblioteca não precisa:
+
+- obter o Access Token manualmente;
+- adicionar o cabeçalho Authorization;
+- controlar a expiração do token;
+- solicitar um novo Access Token.
+
+Todo esse processo é realizado automaticamente pela biblioteca.
 
 # Requisitos
 
@@ -102,20 +142,21 @@ public class ExampleService {
 
 ---
 
-# Como funciona
+## Como funciona
 
 Durante a inicialização da aplicação, a biblioteca:
 
-1. Lê as propriedades configuradas.
-2. Configura automaticamente o cliente OAuth 2.0.
-3. Registra os componentes necessários do Spring Security.
-4. Solicita automaticamente um Access Token quando necessário.
-5. Reutiliza automaticamente Access Tokens válidos.
-6. Solicita automaticamente um novo Access Token quando o token atual expira.
+1. Lê as propriedades configuradas;
+2. Configura automaticamente o cliente OAuth 2.0;
+3. Registra os componentes necessários do Spring Security;
+4. Disponibiliza o `AccessTokenService`;
+5. Disponibiliza o `OAuthRestClientFactory`;
+6. Solicita automaticamente um Access Token quando necessário;
+7. Reutiliza tokens válidos automaticamente;
+8. Solicita um novo Access Token quando o token atual expira;
+9. Adiciona automaticamente o Bearer Token nas requisições realizadas através do `RestClient`.
 
-Todo o gerenciamento do ciclo de vida do Access Token é realizado automaticamente pela biblioteca.
-
----
+O consumidor da biblioteca não precisa se preocupar com autenticação ou gerenciamento do ciclo de vida do Access Token.
 
 # Tratamento de erros
 
@@ -164,18 +205,20 @@ br.com.marhasoft.oauth.client
 
 ---
 
-# Primeira Versão
+## Primeira Versão
 
-A primeira versão da biblioteca contempla:
+A versão inicial contempla:
 
 - Auto Configuration
 - Configuration Properties
 - OAuth 2.0 Client Credentials
 - Gerenciamento automático de Access Tokens
-- Reutilização automática de Access Tokens
-- Renovação automática de Access Tokens expirados
-- Integração com `RestClient`
+- Reutilização automática de tokens
+- Renovação automática após expiração
+- RestClient autenticado
+- Bearer Token automático
 - Tratamento de exceções
+- Integração com RestClient
 - Testes unitários
 - Testes de Auto Configuration
 - Documentação inicial
